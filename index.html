@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario Interactivo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      background-color: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .question {
+      margin-bottom: 20px;
+    }
+
+    .question label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #333;
+      font-size: 1.2rem;
+    }
+
+    .question input, .question select {
+      width: 100%;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .question input:focus, .question select:focus {
+      border-color: #007BFF;
+    }
+
+    .submit button {
+      padding: 15px 40px;
+      border: none;
+      border-radius: 30px;
+      background-color: #007BFF;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .submit button:hover {
+      background-color: #0056b3;
+    }
+
+    .submit button.restart {
+      background-color: #28A745;
+    }
+
+    .submit button.restart:hover {
+      background-color: #218838;
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="question" id="step1">
+      <label for="name">Hola, ¿cuál es tu nombre?</label>
+      <input type="text" id="name" required>
+      <div class="submit">
+        <button onclick="goToStep2()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="question" id="step2" style="display: none;">
+      <label id="greeting"></label>
+      <label for="date">Selecciona la fecha:</label>
+      <input type="date" id="date" min="2024-01-01">
+      <div class="submit">
+        <button onclick="goToStep3()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="question" id="step3" style="display: none;">
+      <label for="referidos">¿Cuántos referidos obtuviste?</label>
+      <input type="number" id="referidos" required>
+      <div class="submit">
+        <button onclick="goToStep4()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="question" id="step4" style="display: none;">
+      <label for="llamadas">¿Cuántas llamadas realizaste?</label>
+      <input type="number" id="llamadas" required>
+      <div class="submit">
+        <button onclick="goToStep5()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="question" id="step5" style="display: none;">
+      <label for="citas">¿Cuántas citas obtuviste?</label>
+      <input type="number" id="citas" required>
+      <div class="submit">
+        <button onclick="goToStep6()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="question" id="step6" style="display: none;">
+      <label for="entrevistas-iniciales">Número de entrevistas iniciales</label>
+      <input type="number" id="entrevistas-iniciales" required>
+      <div class="submit">
+        <button onclick="goToStep7()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="question" id="step7" style="display: none;">
+      <label for="entrevistas-cierre">Número de entrevistas de cierre</label>
+      <input type="number" id="entrevistas-cierre" required>
+      <div class="submit">
+        <button onclick="goToStep8()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="question" id="step8" style="display: none;">
+      <label for="solicitudes">¿Cuántas solicitudes llenaste?</label>
+      <input type="number" id="solicitudes" required>
+      <div class="submit">
+        <button onclick="goToStep9()">Siguiente</button>
+      </div>
+    </div>
+
+    <div class="question" id="step9" style="display: none;">
+      <label id="final-message"></label>
+      <div class="submit">
+        <button class="restart" onclick="restartForm()">Realizar otro registro</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var userName = '';
+
+    function goToStep2() {
+      userName = document.getElementById('name').value;
+      if (userName) {
+        document.getElementById('greeting').textContent = 'Hola ' + userName + ', bienvenido!';
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+      } else {
+        alert('Por favor, ingresa tu nombre.');
+      }
+    }
+
+    function goToStep3() {
+      var date = document.getElementById('date').value;
+      if (date) {
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step3').style.display = 'block';
+      } else {
+        alert('Por favor, selecciona una fecha.');
+      }
+    }
+
+    function goToStep4() {
+      document.getElementById('step3').style.display = 'none';
+      document.getElementById('step4').style.display = 'block';
+    }
+
+    function goToStep5() {
+      document.getElementById('step4').style.display = 'none';
+      document.getElementById('step5').style.display = 'block';
+    }
+
+    function goToStep6() {
+      document.getElementById('step5').style.display = 'none';
+      document.getElementById('step6').style.display = 'block';
+    }
+
+    function goToStep7() {
+      document.getElementById('step6').style.display = 'none';
+      document.getElementById('step7').style.display = 'block';
+    }
+
+    function goToStep8() {
+      document.getElementById('step7').style.display = 'none';
+      document.getElementById('step8').style.display = 'block';
+    }
+
+    function goToStep9() {
+      document.getElementById('step8').style.display = 'none';
+      document.getElementById('final-message').textContent = 'Muchas gracias ' + userName + ', ¡Recuerda que lo que no se mide no se puede mejorar!';
+      document.getElementById('step9').style.display = 'block';
+      submitForm();
+    }
+
+    function submitForm() {
+      var data = {
+        name: userName,
+        date: document.getElementById('date').value,
+        referidos: document.getElementById('referidos').value,
+        llamadas: document.getElementById('llamadas').value,
+        citas: document.getElementById('citas').value,
+        entrevistas_iniciales: document.getElementById('entrevistas-iniciales').value,
+        entrevistas_cierre: document.getElementById('entrevistas-cierre').value,
+        solicitudes: document.getElementById('solicitudes').value
+      };
+
+      fetch('https://script.google.com/macros/s/AKfycbxxshQ07oUlq1fk5gInP4QMpDJ443jOVhe2kXuCNMhc7I-Vo1kHj6CmlCc3wndTfSHL4g/exec', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }).then(response => {
+        console.log('Formulario enviado con éxito');
+      }).catch(error => {
+        console.error('Error al enviar el formulario:', error);
+      });
+    }
+
+    function restartForm() {
+      document.getElementById('step9').style.display = 'none';
+      document.getElementById('step1').style.display = 'block';
+      document.getElementById('name').value = '';
+      document.getElementById('date').value = '';
+      document.getElementById('referidos').value = '';
+      document.getElementById('llamadas').value = '';
+      document.getElementById('citas').value = '';
+      document.getElementById('entrevistas-iniciales').value = '';
+      document.getElementById('entrevistas-cierre').value = '';
+      document.getElementById('solicitudes').value = '';
+    }
+  </script>
+</body>
+</html>
