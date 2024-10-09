@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulario Interactivo</title>
+  <title>25 PUNTOS GO ASOCIADOS</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
   <style>
     body {
@@ -167,7 +167,8 @@
   </div>
 
   <script>
-    var userName = '';
+
+      var userName = '';
 
     function goToStep2() {
       userName = document.getElementById('name').value;
@@ -234,14 +235,22 @@
         solicitudes: document.getElementById('solicitudes').value
       };
 
-      fetch('https://script.google.com/macros/s/AKfycbxxshQ07oUlq1fk5gInP4QMpDJ443jOVhe2kXuCNMhc7I-Vo1kHj6CmlCc3wndTfSHL4g/exec', {
+      fetch('https://script.google.com/macros/s/AKfycbznHJVLFsCHPbIvXHPsfiPkmOkB-r7VQXdiwYg_7yxM4EqrVJbjLxDpzXjjER6aI9kT/exec', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(data)
-      }).then(response => {
-        console.log('Formulario enviado con éxito');
-      }).catch(error => {
-        console.error('Error al enviar el formulario:', error);
-      });
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          console.log('Datos guardados exitosamente');
+        } else {
+          console.log('Error al guardar los datos');
+        }
+      })
+      .catch(error => console.error('Error:', error));
     }
 
     function restartForm() {
@@ -256,6 +265,8 @@
       document.getElementById('entrevistas-cierre').value = '';
       document.getElementById('solicitudes').value = '';
     }
+</script>
+
   </script>
 </body>
 </html>
