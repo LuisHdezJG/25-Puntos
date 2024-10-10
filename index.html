@@ -4,100 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>25 PUNTOS GO ASOCIADOS</title>
+  <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f7f6;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .container {
-      max-width: 600px;
-      background-color: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    .question {
-      margin-bottom: 20px;
-    }
-
-    .question label {
-      display: block;
-      margin-bottom: 10px;
-      font-weight: 600;
-      color: #333;
-      font-size: 1.2rem;
-    }
-
-    .question input, .question select {
-      width: 100%;
-      padding: 15px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-
-    .question input:focus, .question select:focus {
-      border-color: #007BFF;
-    }
-
-    .submit button {
-      padding: 15px 40px;
-      border: none;
-      border-radius: 30px;
-      background-color: #007BFF;
-      color: #fff;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-      margin-top: 20px;
-    }
-
-    .submit button:hover {
-      background-color: #0056b3;
-    }
-
-    .submit button.restart {
-      background-color: #28A745;
-    }
-
-    .submit button.restart:hover {
-      background-color: #218838;
-    }
-
-    /* Animaciones */
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-  </style>
+  <link rel="icon" href="blanco.png" type="image/x-icon"> <!-- Logo en la pestaña -->
 </head>
+<div class="overlay"></div>
 <body>
   <div class="container">
+    <!-- Formulario dividido en pasos -->
     <div class="question" id="step1">
       <label for="name">Hola, ¿cuál es tu nombre?</label>
       <input type="text" id="name" required>
       <div class="submit">
-        <button onclick="goToStep2()">Siguiente</button>
+        <button id="next1">Siguiente</button>
       </div>
     </div>
 
@@ -106,7 +25,7 @@
       <label for="date">Selecciona la fecha:</label>
       <input type="date" id="date" min="2024-01-01">
       <div class="submit">
-        <button onclick="goToStep3()">Siguiente</button>
+        <button id="next2">Siguiente</button>
       </div>
     </div>
 
@@ -114,7 +33,7 @@
       <label for="referidos">¿Cuántos referidos obtuviste?</label>
       <input type="number" id="referidos" required>
       <div class="submit">
-        <button onclick="goToStep4()">Siguiente</button>
+        <button id="next3">Siguiente</button>
       </div>
     </div>
 
@@ -122,7 +41,7 @@
       <label for="llamadas">¿Cuántas llamadas realizaste?</label>
       <input type="number" id="llamadas" required>
       <div class="submit">
-        <button onclick="goToStep5()">Siguiente</button>
+        <button id="next4">Siguiente</button>
       </div>
     </div>
 
@@ -130,7 +49,7 @@
       <label for="citas">¿Cuántas citas obtuviste?</label>
       <input type="number" id="citas" required>
       <div class="submit">
-        <button onclick="goToStep6()">Siguiente</button>
+        <button id="next5">Siguiente</button>
       </div>
     </div>
 
@@ -138,7 +57,7 @@
       <label for="entrevistas-iniciales">Número de entrevistas iniciales</label>
       <input type="number" id="entrevistas-iniciales" required>
       <div class="submit">
-        <button onclick="goToStep7()">Siguiente</button>
+        <button id="next6">Siguiente</button>
       </div>
     </div>
 
@@ -146,7 +65,7 @@
       <label for="entrevistas-cierre">Número de entrevistas de cierre</label>
       <input type="number" id="entrevistas-cierre" required>
       <div class="submit">
-        <button onclick="goToStep8()">Siguiente</button>
+        <button id="next7">Siguiente</button>
       </div>
     </div>
 
@@ -154,113 +73,212 @@
       <label for="solicitudes">¿Cuántas solicitudes llenaste?</label>
       <input type="number" id="solicitudes" required>
       <div class="submit">
-        <button onclick="goToStep9()">Siguiente</button>
+        <button id="next8">Siguiente</button>
       </div>
     </div>
 
     <div class="question" id="step9" style="display: none;">
       <label id="final-message"></label>
       <div class="submit">
-        <button class="restart" onclick="restartForm()">Realizar otro registro</button>
+        <button class="restart" id="restart">Realizar otro registro</button>
       </div>
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    // Importa las funciones necesarias desde los SDKs de Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-      var userName = '';
+    // Configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDMCUdjvIejBghXuVEo8ZL9WoSZUd_KevI",
+      authDomain: "puntos-9b2b2.firebaseapp.com",
+      projectId: "puntos-9b2b2",
+      storageBucket: "puntos-9b2b2.appspot.com",
+      messagingSenderId: "892208235329",
+      appId: "1:892208235329:web:d27fa126cbdfba8fc0d7c0",
+      measurementId: "G-QCZH5E2BNT"
+    };
 
+    // Inicializa Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const database = getDatabase(app);
+
+    // Asignar eventos a los botones
+    document.getElementById('next1').addEventListener('click', goToStep2);
+    document.getElementById('next2').addEventListener('click', goToStep3);
+    document.getElementById('next3').addEventListener('click', goToStep4);
+    document.getElementById('next4').addEventListener('click', goToStep5);
+    document.getElementById('next5').addEventListener('click', goToStep6);
+    document.getElementById('next6').addEventListener('click', goToStep7);
+    document.getElementById('next7').addEventListener('click', goToStep8);
+    document.getElementById('next8').addEventListener('click', goToStep9);
+    document.getElementById('restart').addEventListener('click', restartForm);
+
+    // Funciones de navegación entre pasos
     function goToStep2() {
-      userName = document.getElementById('name').value;
-      if (userName) {
-        document.getElementById('greeting').textContent = 'Hola ' + userName + ', bienvenido!';
-        document.getElementById('step1').style.display = 'none';
-        document.getElementById('step2').style.display = 'block';
-      } else {
+      const name = document.getElementById('name').value.trim(); // Agrega trim() para eliminar espacios en blanco
+      console.log('Nombre ingresado:', name); // Agrega este log para verificar el valor
+      if (name === '') {
         alert('Por favor, ingresa tu nombre.');
+        return;
       }
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
+      document.getElementById('greeting').innerText = `Hola, ${name}!`;
     }
 
     function goToStep3() {
-      var date = document.getElementById('date').value;
-      if (date) {
-        document.getElementById('step2').style.display = 'none';
-        document.getElementById('step3').style.display = 'block';
-      } else {
+      const date = document.getElementById('date').value;
+      if (date === '') {
         alert('Por favor, selecciona una fecha.');
+        return;
       }
+      document.getElementById('step2').style.display = 'none';
+      document.getElementById('step3').style.display = 'block';
     }
 
     function goToStep4() {
+      const referidos = document.getElementById('referidos').value;
+      if (referidos === '') {
+        alert('Por favor, ingresa la cantidad de referidos.');
+        return;
+      }
       document.getElementById('step3').style.display = 'none';
       document.getElementById('step4').style.display = 'block';
     }
 
     function goToStep5() {
+      const llamadas = document.getElementById('llamadas').value;
+      if (llamadas === '') {
+        alert('Por favor, ingresa la cantidad de llamadas.');
+        return;
+      }
       document.getElementById('step4').style.display = 'none';
       document.getElementById('step5').style.display = 'block';
     }
 
     function goToStep6() {
+      const citas = document.getElementById('citas').value;
+      if (citas === '') {
+        alert('Por favor, ingresa la cantidad de citas.');
+        return;
+      }
       document.getElementById('step5').style.display = 'none';
       document.getElementById('step6').style.display = 'block';
     }
 
     function goToStep7() {
+      const entrevistasIniciales = document.getElementById('entrevistas-iniciales').value;
+      if (entrevistasIniciales === '') {
+        alert('Por favor, ingresa el número de entrevistas iniciales.');
+        return;
+      }
       document.getElementById('step6').style.display = 'none';
       document.getElementById('step7').style.display = 'block';
     }
 
     function goToStep8() {
+      const entrevistasCierre = document.getElementById('entrevistas-cierre').value;
+      if (entrevistasCierre === '') {
+        alert('Por favor, ingresa el número de entrevistas de cierre.');
+        return;
+      }
       document.getElementById('step7').style.display = 'none';
       document.getElementById('step8').style.display = 'block';
     }
 
     function goToStep9() {
+      const solicitudes = document.getElementById('solicitudes').value;
+      if (solicitudes === '') {
+        alert('Por favor, ingresa la cantidad de solicitudes llenadas.');
+        return;
+      }
+
+      // Cálculo de puntos
+      const referidos = parseInt(document.getElementById('referidos').value);
+      const llamadas = parseInt(document.getElementById('llamadas').value);
+      const citas = parseInt(document.getElementById('citas').value);
+      const entrevistasIniciales = parseInt(document.getElementById('entrevistas-iniciales').value);
+      const entrevistasCierre = parseInt(document.getElementById('entrevistas-cierre').value);
+      const solicitudesCount = parseInt(document.getElementById('solicitudes').value);
+
+      // Puntos por actividad
+      const puntosPorReferidos = referidos * 3; // 3 puntos por referido
+      const puntosPorLlamadas = llamadas * 1; // 1 puntos por llamada
+      const puntosPorCitas = citas * 2; // 2 puntos por cita
+      const puntosPorEntrevistasIniciales = entrevistasIniciales * 2; // 2 puntos por entrevista inicial
+      const puntosPorEntrevistasCierre = entrevistasCierre * 3; // 3 puntos por entrevista de cierre
+      const puntosPorSolicitudes = solicitudesCount * 5; // 5 punto por solicitud
+
+      // Total de puntos
+      const totalPuntos = puntosPorReferidos + puntosPorLlamadas + puntosPorCitas + puntosPorEntrevistasIniciales + puntosPorEntrevistasCierre + puntosPorSolicitudes;
+
+      const finalMessage = `¡Felicidades! Has acumulado un total de ${totalPuntos} puntos. Recuerda que lo que no se mide, no se puede mejorar.`;
+      document.getElementById('final-message').innerText = finalMessage;
+      
+      // Guardar datos en Firebase
+      saveDataToFirebase();
+
+      // Mostrar el paso final
       document.getElementById('step8').style.display = 'none';
-      document.getElementById('final-message').textContent = 'Muchas gracias ' + userName + ', ¡Recuerda que lo que no se mide no se puede mejorar!';
       document.getElementById('step9').style.display = 'block';
-      submitForm();
     }
 
-    function submitForm() {
-      var data = {
-        name: userName,
-        date: document.getElementById('date').value,
-        referidos: document.getElementById('referidos').value,
-        llamadas: document.getElementById('llamadas').value,
-        citas: document.getElementById('citas').value,
-        entrevistas_iniciales: document.getElementById('entrevistas-iniciales').value,
-        entrevistas_cierre: document.getElementById('entrevistas-cierre').value,
-        solicitudes: document.getElementById('solicitudes').value
-      };
+    function saveDataToFirebase() {
+      const name = document.getElementById('name').value.trim();
+      const date = document.getElementById('date').value;
+      const referidos = parseInt(document.getElementById('referidos').value);
+      const llamadas = parseInt(document.getElementById('llamadas').value);
+      const citas = parseInt(document.getElementById('citas').value);
+      const entrevistasIniciales = parseInt(document.getElementById('entrevistas-iniciales').value);
+      const entrevistasCierre = parseInt(document.getElementById('entrevistas-cierre').value);
+      const solicitudes = parseInt(document.getElementById('solicitudes').value);
+      const totalPuntos = calculateTotalPoints(referidos, llamadas, citas, entrevistasIniciales, entrevistasCierre, solicitudes);
 
-      fetch('https://script.google.com/macros/s/AKfycbzjwRSfC2KXn3lAUVbCueUZzOsLzEMCXtCofqQYZQYOkX1X3uOs3HE0UDVwg9pqNhNI/exec', {
-  method: 'POST',
-  body: JSON.stringify(data),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-.then(response => {
-  if (!response.ok) {
-    throw new Error('Network response was not ok ' + response.statusText);
-  }
-  return response.json();
-})
-.then(data => {
-  console.log('Success:', data);
-  alert('Datos enviados correctamente');
-})
-.catch((error) => {
-  console.error('Error:', error);
-  alert('Error al enviar datos');
-});
+      const newEntryRef = ref(database, 'registros/' + Date.now());
+      set(newEntryRef, {
+        name: name,
+        date: date,
+        referidos: referidos,
+        llamadas: llamadas,
+        citas: citas,
+        entrevistasIniciales: entrevistasIniciales,
+        entrevistasCierre: entrevistasCierre,
+        solicitudes: solicitudes,
+        totalPuntos: totalPuntos
+      })
+      .then(() => {
+        console.log('Datos guardados correctamente en Firebase');
+      })
+      .catch((error) => {
+        console.error('Error al guardar datos en Firebase:', error);
+      });
+    }
 
+    function calculateTotalPoints(referidos, llamadas, citas, entrevistasIniciales, entrevistasCierre, solicitudes) {
+      const puntosPorReferidos = referidos * 3;
+      const puntosPorLlamadas = llamadas * 1;
+      const puntosPorCitas = citas * 2;
+      const puntosPorEntrevistasIniciales = entrevistasIniciales * 2;
+      const puntosPorEntrevistasCierre = entrevistasCierre * 3;
+      const puntosPorSolicitudes = solicitudes * 5;
+      return puntosPorReferidos + puntosPorLlamadas + puntosPorCitas + puntosPorEntrevistasIniciales + puntosPorEntrevistasCierre + puntosPorSolicitudes;
+    }
 
     function restartForm() {
-      document.getElementById('step9').style.display = 'none';
       document.getElementById('step1').style.display = 'block';
+      document.getElementById('step2').style.display = 'none';
+      document.getElementById('step3').style.display = 'none';
+      document.getElementById('step4').style.display = 'none';
+      document.getElementById('step5').style.display = 'none';
+      document.getElementById('step6').style.display = 'none';
+      document.getElementById('step7').style.display = 'none';
+      document.getElementById('step8').style.display = 'none';
+      document.getElementById('step9').style.display = 'none';
       document.getElementById('name').value = '';
       document.getElementById('date').value = '';
       document.getElementById('referidos').value = '';
@@ -269,9 +287,9 @@
       document.getElementById('entrevistas-iniciales').value = '';
       document.getElementById('entrevistas-cierre').value = '';
       document.getElementById('solicitudes').value = '';
+      document.getElementById('final-message').innerText = '';
     }
-</script>
-
   </script>
 </body>
 </html>
+
